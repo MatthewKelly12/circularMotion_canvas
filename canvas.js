@@ -49,15 +49,24 @@ function Particle(x, y, radius, color) {
     this.color = color
     this.radians = Math.random() * Math.PI * 2
     this.velocity = .05
-    this.distanceFromCenter = randomIntFromRange(50, 120)
+    this.distanceFromCenter = randomIntFromRange(50, 200)
+    this.lastMouse = {x: x, y: y}
 
 
     this.update = function() {
         const lastPoint = {x: this.x, y: this.y}
 
+        // Move points over time
         this.radians += this.velocity;
-        this.x = x + Math.cos(this.radians) * this.distanceFromCenter
-        this.y = y + Math.sin(this.radians) * this.distanceFromCenter
+
+        // Drag Effect
+        this.lastMouse.x += (mouse.x - this.lastMouse.x) * .05
+        this.lastMouse.y += (mouse.y - this.lastMouse.y) * .05
+
+
+        // Circular Motion
+        this.x = this.lastMouse.x + Math.cos(this.radians) * this.distanceFromCenter
+        this.y = this.lastMouse.y + Math.sin(this.radians) * this.distanceFromCenter
         this.draw(lastPoint)
     }
 
@@ -80,9 +89,9 @@ function Particle(x, y, radius, color) {
 let particles;
 function init() {
     particles = []
-
-    for (let i = 0; i < 50; i++) {
-        particles.push(new Particle(canvas.width/2, canvas.height/2, 5, 'blue'));
+    const radius = (Math.random() * 2) + 1
+    for (let i = 0; i < 300; i++) {
+        particles.push(new Particle(canvas.width/2, canvas.height/2, radius, randomColor(colors)));
     }
     console.log(particles)
 }
